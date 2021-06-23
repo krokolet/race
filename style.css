@@ -27,6 +27,7 @@
 	position: relative;
 	margin: auto;
 	background: #222;
+	overflow: hidden;
 }
 
 .line {
