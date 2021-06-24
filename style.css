@@ -1,8 +1,22 @@
 @import "./reset.css";
 
 .start{
-	display: block;
-	margin:auto;
+	display: flex;
+	justify-content: center;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	margin: 0;
+	border: none;
+	color: white;
+	padding: 2rem 0;
+	background: black;
+	font-size: 1.5rem;
+	font-family: sans-serif;
+	font-weight: 700;
+	cursor: pointer;
+	z-index: 200;
 }
 
 .hide {
@@ -13,8 +27,6 @@
 	width: 50px;
 	height: 100px;
 	position: absolute;
-	left: 125px;
-	bottom: 10px;
 }
 
 .player {
@@ -24,7 +36,7 @@
 
 .gameArea {
 	width: 300px;
-	height: 100%;
+	height: 100vh;
 	position: relative;
 	margin: auto;
 	background: #222;
@@ -37,4 +49,26 @@
 	width: 10px;
 	background: #fff;
 	left: 145px;
+}
+
+.score{
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+background: rgb(30, 31, 30);
+padding: 1.5rem 0;
+z-index: 200;
+color:rgb(165, 66, 66);
+font-size: 1.5rem;
+font-family: sans-serif;
+font-weight: 500;
+text-align: center;
+}
+
+.easy, .medium, .hard{
+	margin-left: 20px;
+	background: transparent;
+	color:teal;
+	font-size: 1.2rem;
 }

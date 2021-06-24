@@ -1,13 +1,15 @@
+const MAX_ENEMY = 8;
+
 const score = document.querySelector(".score"),
-	start = document.querySelector(".start");
+	start = document.querySelector(".start"),	
+	gameArea = document.querySelector(".gameArea");
+	car = document.createElement("div");
 
-const gameArea = document.querySelector(".gameArea");
-gameArea.classList.add("hide");
-
-const car = document.createElement("div");
 car.classList.add("car", "player");
 
-const MAX_ENEMY = 8;
+const easyLevelButton = start.querySelector('.easy');
+const mediumLevelButton = start.querySelector('.medium');
+const hardLevelButton = start.querySelector('.hard');
 
 const keys = {
 	ArrowUp: false,
@@ -19,23 +21,36 @@ const keys = {
 const setting = {
 	start: false,
 	score: 0,
-	speed: 8,
+	speed: 1,
 	traffic: 2.5,
 };
 
+const setSpeed = speed => setting.speed = speed;
+
+const setBestResult = (score) => localStorage.setItem('bestScore', score);
+const getBestResult = () => localStorage.getItem('bestScore');
+
 const music = new Audio("audio.mp3");
+music.loop = true;
 
 const getQuantityElements = (heightElement) =>
 	document.documentElement.clientHeight / heightElement + 1;
 
 const getRandomEnemy = (maxEnemy) => Math.floor(Math.random() * (maxEnemy + 1));
 
-function startGame() {
-    start.classList.add("hide");
-    gameArea.classList.remove("hide");
+const isCarTouched = (carRect, enemyRect) => carRect.top <= enemyRect.bottom &&
+												carRect.right >= enemyRect.left &&
+												carRect.left <= enemyRect.right &&
+												carRect.bottom >= enemyRect.top;
 
+function startGame() {
+	gameArea.innerHTML = '';
+	start.classList.add("hide");
 	music.play();
-	setTimeout(() => music.stop(), 60000);
+
+	if(!getBestResult()){
+		setBestResult(0);
+	}
 
 	for (let i = 0; i < getQuantityElements(100); i++) {
 		const line = document.createElement("div");
@@ -51,15 +66,22 @@ function startGame() {
 		enemy.style.background = `transparent url(./image/enemy${getRandomEnemy(
 			MAX_ENEMY
 		)}.png) center / cover no-repeat`;
-		enemy.y = -100 * setting.traffic * (i + 1);
+		enemy.y = -100 * setting.traffic * (i + 1) - setting.speed * 20;
 		enemy.style.left =
 			Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + "px";
 		enemy.style.top = enemy.y + "px";
 		gameArea.appendChild(enemy);
 	}
 
+	setting.score = 0;
 	setting.start = true;
+
 	gameArea.appendChild(car);
+
+	car.style.left = gameArea.offsetWidth / 2 - car.offsetWidth / 2 + 'px';
+	car.style.top = 'auto';
+	car.style.bottom = '10px';
+
 	setting.x = car.offsetLeft;
 	setting.y = car.offsetTop;
 
@@ -68,17 +90,26 @@ function startGame() {
 
 function playGame() {
 	if (setting.start) {
+
+		setting.score += setting.speed/10;
+		if(setting.score > ((setting.speed - 1) * 100 + setting.speed * 100 )){
+			setting.speed += 1;
+		}
+
+		score.innerHTML = 'SCORE: ' + Math.floor(setting.score) + '<br>(Best score: '+getBestResult() + ')' + '<br>Current speed: ' + setting.speed*10 + ' km/h';
+
 		moveRoad();
 		moveEnemy();
+
 		if (keys.ArrowLeft && setting.x > 0) {
-			setting.x -= setting.speed;
+			setting.x -= Math.ceil(setting.speed / 2);
 		}
 
 		if (
 			keys.ArrowRight &&
 			setting.x < gameArea.offsetWidth - car.offsetWidth
 		) {
-			setting.x += setting.speed;
+			setting.x += Math.ceil(setting.speed / 2);
 		}
 
 		if (
@@ -88,7 +119,7 @@ function playGame() {
 			setting.y += setting.speed;
 		}
 
-		if (keys.ArrowUp && setting.y > 0) {
+		if (keys.ArrowUp && setting.y > (0 + score.offsetHeight)) {
 			setting.y -= setting.speed;
 		}
 
@@ -129,17 +160,41 @@ function moveRoad() {
 function moveEnemy() {
 	let enemies = document.querySelectorAll(".enemy");
 	enemies.forEach(function (enemy) {
+		let carRect = car.getBoundingClientRect();
+		let enemyRect = enemy.getBoundingClientRect();
+
+		if (isCarTouched(carRect, enemyRect)) {
+			stopGame();
+		}
+
 		enemy.y += setting.speed / 2;
+		enemy.style.top = enemy.y + "px";
+
 		if (enemy.y >= document.documentElement.clientHeight) {
-			enemy.y = -100 * setting.traffic;
+			enemy.y = -100 * setting.traffic - setting.speed * 20;
 			enemy.style.left =
 				Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + "px";
 		}
-		enemy.style.top = enemy.y + "px";
 	});
+}
+
+function stopGame() {
+	setting.start = false;
+	start.classList.remove('hide');
+	start.style.top = score.offsetHeight + 'px';
+	music.pause();
+	music.currentTime = 0;
+	if(Math.floor(setting.score) > getBestResult()){
+		setBestResult(Math.floor(setting.score));
+		alert("You are the best now !!! Your score: " + Math.floor(setting.score));
+	}
 }
 
 start.addEventListener("click", startGame);
 
 document.addEventListener("keydown", startRun);
 document.addEventListener("keyup", stopRun);
+
+easyLevelButton.addEventListener('click',()=>setSpeed(1));
+mediumLevelButton.addEventListener('click',()=>setSpeed(4));
+hardLevelButton.addEventListener('click',()=>setSpeed(8));
