@@ -5,12 +5,7 @@ const score = document.querySelector(".score"),
 	start = document.querySelector(".start"),
 	gameArea = document.querySelector(".gameArea");
 car = document.createElement("div");
-
 car.classList.add("car", "player");
-
-const easyLevelButton = start.querySelector(".easy");
-const mediumLevelButton = start.querySelector(".medium");
-const hardLevelButton = start.querySelector(".hard");
 
 const keys = {
 	ArrowUp: false,
