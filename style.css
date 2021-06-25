@@ -15,7 +15,6 @@
 	font-size: 1.5rem;
 	font-family: sans-serif;
 	font-weight: 700;
-	cursor: pointer;
 	z-index: 200;
 }
 
@@ -36,7 +35,6 @@
 
 .gameArea {
 	width: 300px;
-	height: 100vh;
 	position: relative;
 	margin: auto;
 	background: #222;
@@ -51,7 +49,7 @@
 	left: 145px;
 }
 
-.score{
+.score{	
 position: absolute;
 top: 0;
 left: 0;
@@ -66,9 +64,12 @@ font-weight: 500;
 text-align: center;
 }
 
-.easy, .medium, .hard{
+.btn{
 	margin-left: 20px;
 	background: transparent;
-	color:teal;
+	color:#00ffff;
 	font-size: 1.2rem;
+	font-family: cursive;
+    box-shadow: 1px 1px 1px 1px palevioletred;
+	cursor: pointer;
 }
