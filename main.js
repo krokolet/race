@@ -57,8 +57,6 @@ function startGame(event) {
 
 	setGamesLevel[target.dataset.level]();
 
-	document.addEventListener('keydown', startRun);
-	document.addEventListener('keyup', stopRun);
 	score.style.minHeight = '100px';
 	gameArea.style.minHeight =
 		Math.floor(
@@ -168,7 +166,7 @@ function playGame() {
 }
 
 function startRun(event) {
-	if (!(event.key in keys)) {
+	if (!(keys.hasOwnProperty(event.key))) {
 		return;
 	}
 	event.preventDefault();
@@ -176,7 +174,7 @@ function startRun(event) {
 }
 
 function stopRun(event) {
-	if (!(event.key in keys)) {
+	if (!(keys.hasOwnProperty(event.key))) {
 		return;
 	}
 	event.preventDefault();
@@ -227,9 +225,8 @@ function stopGame() {
 			"You are the best now !!! Your score: " + Math.floor(setting.score)
 		);
 	}
-
-	document.removeEventListener('keydown', startRun);
-	document.removeEventListener('keyup', stopRun);
 }
 
 start.addEventListener("click", startGame);
+document.addEventListener('keydown', startRun);
+document.addEventListener('keyup', stopRun);
